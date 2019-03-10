@@ -7,10 +7,13 @@ import ch.heigvd.res.labio.interfaces.IFileExplorer;
 import ch.heigvd.res.labio.interfaces.IFileVisitor;
 import ch.heigvd.res.labio.quotes.QuoteClient;
 import ch.heigvd.res.labio.quotes.Quote;
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
+
+import java.io.*;
+// For easiest solutions on dirs and files creation
+import java.nio.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
@@ -94,6 +97,7 @@ public class Application implements IApplication {
       for (String tag : quote.getTags()) {
         LOG.info("> " + tag);
       }
+      storeQuote(quote,"quote-" + i + ".utf8");
     }
   }
   
@@ -123,7 +127,17 @@ public class Application implements IApplication {
    * @throws IOException 
    */
   void storeQuote(Quote quote, String filename) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    String thePath= WORKSPACE_DIRECTORY;
+    for (String tag : quote.getTags()) {
+      thePath += "/"+tag;
+    }
+
+    boolean success = new File(thePath).mkdirs();
+
+    PrintWriter writer = new PrintWriter(thePath + "/" + filename, "UTF-8");
+    writer.print(quote.getQuote());
+    writer.close();
+    // throw new UnsupportedOperationException("The student has not implemented this method yet.");
   }
   
   /**
@@ -140,6 +154,11 @@ public class Application implements IApplication {
          * of the the IFileVisitor interface inline. You just have to add the body of the visit method, which should
          * be pretty easy (we want to write the filename, including the path, to the writer passed in argument).
          */
+        try {
+          writer.write(file.getPath() + file.getName());
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
       }
     });
   }
