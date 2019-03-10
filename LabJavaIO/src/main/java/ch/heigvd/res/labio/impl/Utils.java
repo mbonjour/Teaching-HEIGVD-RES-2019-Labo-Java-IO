@@ -24,11 +24,7 @@ public class Utils {
     if(test.length != 1){
       return test;
     }
-    test =  lines.split("(?<=\\n)",2);
-    if(test.length != 1){
-      return test;
-    }
-    test = lines.split("(?<=\\r)",2);
+    test =  lines.split("(?<=\\n)|(?<=\\r)",2);
     if(test.length != 1){
       return test;
     } else {
