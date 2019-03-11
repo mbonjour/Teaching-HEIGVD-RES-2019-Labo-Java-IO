@@ -92,7 +92,7 @@ public class Application implements IApplication {
       for (String tag : quote.getTags()) {
         LOG.info("> " + tag);
       }
-      storeQuote(quote,"quote-" + i + ".utf8");
+      storeQuote(quote,"quote-" + (i+1) + ".utf8");
     }
   }
   
@@ -150,7 +150,7 @@ public class Application implements IApplication {
          * be pretty easy (we want to write the filename, including the path, to the writer passed in argument).
          */
         try {
-          writer.write(file.getPath() + file.getName());
+          writer.write(file.getPath() +'\n');
         } catch (IOException e) {
           e.printStackTrace();
         }
