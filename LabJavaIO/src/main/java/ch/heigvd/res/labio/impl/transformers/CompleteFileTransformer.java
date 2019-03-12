@@ -30,5 +30,4 @@ public class CompleteFileTransformer extends FileTransformer {
     writer = new FileNumberingFilterWriter(new UpperCaseFilterWriter(writer));
     return writer; 
   }
-
 }

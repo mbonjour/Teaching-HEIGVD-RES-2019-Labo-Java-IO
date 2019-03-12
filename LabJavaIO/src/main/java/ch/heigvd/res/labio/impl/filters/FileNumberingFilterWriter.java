@@ -1,5 +1,7 @@
 package ch.heigvd.res.labio.impl.filters;
 
+import ch.heigvd.res.labio.impl.Utils;
+
 import java.io.FilterWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -16,26 +18,51 @@ import java.util.logging.Logger;
  * @author Olivier Liechti
  */
 public class FileNumberingFilterWriter extends FilterWriter {
-
+  private int lineCounter = 0;
+  private boolean tempo;
   private static final Logger LOG = Logger.getLogger(FileNumberingFilterWriter.class.getName());
 
   public FileNumberingFilterWriter(Writer out) {
     super(out);
+    tempo = false;
   }
 
   @Override
   public void write(String str, int off, int len) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    for(int i = off; i < off + len; ++i){
+      this.write(str.charAt(i));
+    }
   }
 
   @Override
   public void write(char[] cbuf, int off, int len) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    for(int i = off; i < off + len; ++i){
+      this.write(cbuf[i]);
+    }
   }
 
   @Override
   public void write(int c) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
-  }
+    if(lineCounter == 0){
+      out.write(String.valueOf(++lineCounter) + '\t');
+    }
+    char temp = (char) c;
 
+    if(temp == '\r'){
+      tempo = true;
+      out.write(c);
+      //out.write(String.valueOf(++lineCounter) + '\t');
+    }
+    else if(temp == '\n'){
+      tempo = false;
+      out.write(c);
+      out.write(String.valueOf(++lineCounter) + '\t');
+    } else {
+      if(tempo){
+        out.write(String.valueOf(++lineCounter) + '\t');
+        tempo = false;
+      }
+      out.write(c);
+    }
+  }
 }
