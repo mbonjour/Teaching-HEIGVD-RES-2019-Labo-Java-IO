@@ -30,6 +30,9 @@ public class FileNumberingFilterWriter extends FilterWriter {
 
   @Override
   public void write(String str, int off, int len) throws IOException {
+    if(off + len > str.length()){
+      throw new IndexOutOfBoundsException("Offset and length ar not correct for the given string");
+    }
     for(int i = off; i < off + len; ++i){
       this.write(str.charAt(i));
     }
@@ -37,6 +40,9 @@ public class FileNumberingFilterWriter extends FilterWriter {
 
   @Override
   public void write(char[] cbuf, int off, int len) throws IOException {
+    if(off + len > cbuf.length){
+      throw new IndexOutOfBoundsException("Offset and length ar not correct for the given string");
+    }
     for(int i = off; i < off + len; ++i){
       this.write(cbuf[i]);
     }
