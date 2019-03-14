@@ -82,16 +82,13 @@ public class Application implements IApplication {
     QuoteClient client = new QuoteClient();
     for (int i = 0; i < numberOfQuotes; i++) {
       Quote quote = client.fetchQuote();
-      /* There is a missing piece here!
-       * As you can see, this method handles the first part of the lab. It uses the web service
-       * client to fetch quotes. We have removed a single line from this method. It is a call to
-       * one method provided by this class, which is responsible for storing the content of the
-       * quote in a text file (and for generating the directories based on the tags).
-       */
+      // Logging the quote fetched
       LOG.info("Received a new joke with " + quote.getTags().size() + " tags.");
+      // Getting all tags of the quote
       for (String tag : quote.getTags()) {
         LOG.info("> " + tag);
       }
+      // Call to the storeQuote method to save the quote in an appropriate dir for the tags
       storeQuote(quote,"quote-" + (i+1) + ".utf8");
     }
   }
@@ -122,17 +119,17 @@ public class Application implements IApplication {
    * @throws IOException 
    */
   void storeQuote(Quote quote, String filename) throws IOException {
+    // Creating the dir path fo the tags the quote contains
     String thePath= WORKSPACE_DIRECTORY;
     for (String tag : quote.getTags()) {
       thePath += "/"+tag;
     }
-
     boolean success = new File(thePath).mkdirs();
 
+    // Writing the quote in file
     PrintWriter writer = new PrintWriter(thePath + "/" + filename, "UTF-8");
     writer.print(quote.getQuote());
     writer.close();
-    // throw new UnsupportedOperationException("The student has not implemented this method yet.");
   }
   
   /**
@@ -144,15 +141,11 @@ public class Application implements IApplication {
     explorer.explore(new File(WORKSPACE_DIRECTORY), new IFileVisitor() {
       @Override
       public void visit(File file) {
-        /*
-         * There is a missing piece here. Notice how we use an anonymous class here. We provide the implementation
-         * of the the IFileVisitor interface inline. You just have to add the body of the visit method, which should
-         * be pretty easy (we want to write the filename, including the path, to the writer passed in argument).
-         */
         try {
-          writer.write(file.getPath() +'\n');
+          // We write the file path which contains his name as asked
+          writer.write(file.getPath() + '\n');
         } catch (IOException e) {
-          e.printStackTrace();
+          LOG.severe("Error in visiting files : " + e.getMessage());
         }
       }
     });
@@ -163,5 +156,4 @@ public class Application implements IApplication {
     IFileExplorer explorer = new DFSFileExplorer();
     explorer.explore(new File(WORKSPACE_DIRECTORY), new CompleteFileTransformer());    
   }
-
 }

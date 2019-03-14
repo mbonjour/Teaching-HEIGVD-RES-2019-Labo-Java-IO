@@ -18,6 +18,7 @@ import java.util.logging.Logger;
  * @author Olivier Liechti
  */
 public class FileNumberingFilterWriter extends FilterWriter {
+  // Added attribute to count lines and handle the \r\n newline
   private int lineCounter = 0;
   private boolean tempo;
   private static final Logger LOG = Logger.getLogger(FileNumberingFilterWriter.class.getName());
@@ -43,21 +44,25 @@ public class FileNumberingFilterWriter extends FilterWriter {
 
   @Override
   public void write(int c) throws IOException {
+    // We call this method to handle all types
+    // At first we write the first number and the tab in all cases
     if(lineCounter == 0){
       out.write(String.valueOf(++lineCounter) + '\t');
     }
-    char temp = (char) c;
+    char currentChar = (char) c;
 
-    if(temp == '\r'){
+    if(currentChar == '\r'){
+      // We don't write the number of line directly in case of \r\n
       tempo = true;
       out.write(c);
-      //out.write(String.valueOf(++lineCounter) + '\t');
     }
-    else if(temp == '\n'){
+    else if(currentChar == '\n'){
+      // If the previous char was \r it permits to write the \r\n correctly
       tempo = false;
       out.write(c);
       out.write(String.valueOf(++lineCounter) + '\t');
     } else {
+      // If the previous char was \r and the next one not a \n we don't forget to write the number of line
       if(tempo){
         out.write(String.valueOf(++lineCounter) + '\t');
         tempo = false;

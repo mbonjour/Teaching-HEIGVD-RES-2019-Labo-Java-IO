@@ -1,6 +1,5 @@
 package ch.heigvd.res.labio.impl;
 
-import java.util.Arrays;
 import java.util.logging.Logger;
 
 /**
@@ -21,18 +20,22 @@ public class Utils {
    * contain any line separator, then the first element is an empty string.
    */
   public static String[] getNextLine(String lines) {
-    String[] test =  lines.split("(?<=\\r\\n)",2);
-    if(test.length != 1){
-      return test;
+    // We first treat \r\n the limit of 2 permit to analyze until the second newline
+    // The regex (?<=\r\n) permit to get the \r\n separator and keep it ont the splitted result
+    String[] splitterLines =  lines.split("(?<=\\r\\n)",2);
+    // If we have 1 line we got the wrong separator or there's no newline
+    if(splitterLines.length != 1){
+      return splitterLines;
     }
-    test =  lines.split("(?<=\\n)|(?<=\\r)",2);
-    if(test.length != 1){
-      return test;
+    // We then treat the \r or \n case
+    splitterLines =  lines.split("(?<=\\n)|(?<=\\r)",2);
+    if(splitterLines.length != 1){
+      return splitterLines;
     } else {
-      test = new String[] {"", lines};
-      return test;
+      // Finally if there isn't newline we return this
+      splitterLines = new String[] {"", lines};
+      return splitterLines;
     }
-    // throw new UnsupportedOperationException("The student has not implemented this method yet.");
   }
 
 }

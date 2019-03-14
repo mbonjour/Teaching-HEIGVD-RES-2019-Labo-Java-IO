@@ -17,14 +17,20 @@ public class DFSFileExplorer implements IFileExplorer {
 
   @Override
   public void explore(File rootDirectory, IFileVisitor visitor) {
+    // We first visit the current location
     visitor.visit(rootDirectory);
+    // If it's a dir we first check if it contains other dirs
     if(rootDirectory.isDirectory()) {
+      // Create a list of dirs
       File[] list = rootDirectory.listFiles(File::isDirectory);
+      // We sort it for the tests
       Arrays.sort(list);
+      // Explore the dirs recursively
       for (File dir : list) {
         explore(dir, visitor);
       }
 
+      // We make a list of files and visit each of it
       list = rootDirectory.listFiles(File::isFile);
       Arrays.sort(list);
       for (File file : list) {
